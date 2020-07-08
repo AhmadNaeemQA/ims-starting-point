@@ -23,12 +23,14 @@ public class Ims {
 	public static final Logger LOGGER = Logger.getLogger(Ims.class);
 
 	public void imsSystem() {
+
+		// Inputs username and password to connect to SQL server
 		LOGGER.info("What is your username");
 		String username = Utils.getInput();
 		LOGGER.info("What is your password");
 		String password = Utils.getInput();
 
-		init(username, password);
+		init("jdbc:mysql://" + Utils.MYSQL_URL + "/practice", username, password, "src/main/resources/sql-schema.sql");
 
 		LOGGER.info("Which entity would you like to use?");
 		Domain.printDomains();
@@ -76,17 +78,6 @@ public class Ims {
 		default:
 			break;
 		}
-	}
-
-	/**
-	 * To initialise the database schema. DatabaseConnectionUrl will default to
-	 * localhost.
-	 *
-	 * @param username
-	 * @param password
-	 */
-	public void init(String username, String password) {
-		init("jdbc:mysql://" + Utils.MYSQL_URL + "/", username, password, "src/main/resources/sql-schema.sql");
 	}
 
 	public String readFile(String fileLocation) {

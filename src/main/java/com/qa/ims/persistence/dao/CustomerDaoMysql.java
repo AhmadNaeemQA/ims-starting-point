@@ -22,7 +22,7 @@ public class CustomerDaoMysql implements Dao<Customer> {
 	private String password;
 
 	public CustomerDaoMysql(String username, String password) {
-		this.jdbcConnectionUrl = "jdbc:mysql://" + Utils.MYSQL_URL + "/ims";
+		this.jdbcConnectionUrl = "jdbc:mysql://" + Utils.MYSQL_URL + "/" + Utils.DATABASE_NAME;
 		this.username = username;
 		this.password = password;
 	}
