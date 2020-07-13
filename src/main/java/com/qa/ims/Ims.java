@@ -61,7 +61,7 @@ public class Ims {
 		case ORDER:
 			OrderController orderController = new OrderController(
 					new OrderServices(new OrderDaoMysql(username, password)));
-			doAction(customerController, action);
+			doAction(orderController, action);
 			break;
 		case STOP:
 			break;

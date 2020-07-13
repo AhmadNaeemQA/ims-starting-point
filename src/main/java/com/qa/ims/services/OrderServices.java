@@ -2,8 +2,8 @@ package com.qa.ims.services;
 
 import java.util.List;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Order;
 import com.qa.ims.persistence.dao.Dao;
+import com.qa.ims.persistence.domain.Order;
 
 public class OrderServices implements CrudServices<Order> {
 
