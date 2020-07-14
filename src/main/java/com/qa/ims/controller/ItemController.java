@@ -38,7 +38,7 @@ public class ItemController implements CrudController<Item> {
 		LOGGER.info("Please enter a price");
 		int price = Integer.parseInt(getInput());
 		Item item = itemService.create(new Item(name, price));
-		LOGGER.info("Customer created");
+		LOGGER.info("Item created");
 		return item;
 	}
 
@@ -52,7 +52,7 @@ public class ItemController implements CrudController<Item> {
 		int price = Integer.parseInt(getInput());
 		Item item = itemService.update(new Item(id, name, price));
 		System.out.println(item);
-		LOGGER.info("Customer Updated");
+		LOGGER.info("Item Updated");
 		return item;
 	}
 

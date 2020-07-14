@@ -37,9 +37,13 @@ public class OrderController implements CrudController<Order> {
 	@Override
 	public List<Order> readAll() {
 		List<Order> orders = orderService.readAll();
+		int total = 0;
 		for (Order order : orders) {
 			LOGGER.info(order.toString());
+			total = total + order.getPrice();
 		}
+		LOGGER.info("The total cost of the items shown above are: £" + total);
+
 		return orders;
 	}
 
@@ -79,12 +83,12 @@ public class OrderController implements CrudController<Order> {
 		if (action.equalsIgnoreCase("add")) {
 			create();
 		} else if (action.equalsIgnoreCase("delete")) {
-
+			delete();
 		} else {
 			LOGGER.info("Input not valid");
 		}
 
-		LOGGER.info("Customer Updated");
+		LOGGER.info("Order Updated");
 		return null;
 	}
 

@@ -2,34 +2,36 @@ package com.qa.ims.persistence.domain;
 
 import java.util.ArrayList;
 
-public class Order {
+public class Order extends Item {
 
-	private Long id;
+	private Long order_id;
 	private int customer_id;
-	private int item_id;
 
 	// Array List storing all items they want in that order
 	private ArrayList<Integer> basket = new ArrayList<Integer>();
 
-	public Order(int customer_id) {
-		customer_id = this.customer_id;
+	public Order(Long order_id, int customer_id, Long id, String name, int price) {
+		super(id, name, price);
+		this.order_id = order_id;
+		this.customer_id = customer_id;
 	}
 
-	public Order(Long id, int customer_id) {
-		id = this.id;
+	public Order(Long order_id, int customer_id, Long id) {
+		super(id);
+		order_id = this.order_id;
 		customer_id = this.customer_id;
 	}
 
 	public Order() {
-
+		super();
 	}
 
-	public Long getId() {
-		return id;
+	public Long getOrder_id() {
+		return order_id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setOrder_id(Long id) {
+		this.order_id = id;
 	}
 
 	public int getCustomer_id() {
@@ -40,16 +42,9 @@ public class Order {
 		this.customer_id = customer_id;
 	}
 
-	public void setItem_id(int item_id) {
-		this.item_id = item_id;
-	}
-
-	public int getItem_id() {
-		return item_id;
-	}
-
 	public String toString() {
-		return ("id:" + this.getId() + " Customer ID: " + this.getCustomer_id() + " Item: " + this.getItem_id());
+		return ("Order ID:" + this.getOrder_id() + " Customer ID: " + this.getCustomer_id() + " Item ID: "
+				+ this.getId() + " Name: " + this.getName() + " Price: £" + this.getPrice());
 	}
 
 	public void addItem(int item_id) {

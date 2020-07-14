@@ -34,9 +34,12 @@ public class OrderDaoMysql implements Dao<Order> {
 	}
 
 	Order orderFromResultSet(ResultSet resultSet) throws SQLException {
-		Long id = resultSet.getLong("id");
+		Long order_id = resultSet.getLong("id");
 		int customer_id = resultSet.getInt("customer_id");
-		return new Order(id, customer_id);
+		Long item_id = resultSet.getLong("item_id");
+		String name = resultSet.getString("name");
+		int price = resultSet.getInt("price");
+		return new Order(order_id, customer_id, item_id, name, price);
 	}
 
 	String getInput() {
@@ -50,32 +53,47 @@ public class OrderDaoMysql implements Dao<Order> {
 	 */
 	@Override
 	public List<Order> readAll() {
-		try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
-				Statement statement = connection.createStatement();
-				ResultSet resultSet = statement.executeQuery("select * from orders");) {
-			ArrayList<Order> orders = new ArrayList<>();
-			while (resultSet.next()) {
-				orders.add(orderFromResultSet(resultSet));
+		LOGGER.info("Do you want to read all [all] or specific customer [one]? ");
+		String option = getInput();
+		if (option.equalsIgnoreCase("one")) {
+			LOGGER.info("Enter your Customer ID ");
+			int customer_id = Integer.parseInt(getInput());
+			try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
+					Statement statement = connection.createStatement();
+					ResultSet resultSet = statement.executeQuery(
+							"SELECT orders.id, orders.customer_id, orders.item_id, items.name, items.price FROM orders\n"
+									+ "INNER JOIN items ON orders.item_id=items.id WHERE orders.customer_id ="
+									+ customer_id);) {
+				ArrayList<Order> orders = new ArrayList<>();
+				while (resultSet.next()) {
+					orders.add(orderFromResultSet(resultSet));
+				}
+				return orders;
+			} catch (SQLException e) {
+				LOGGER.debug(e.getStackTrace());
+				LOGGER.error(e.getMessage());
 			}
-			return orders;
-		} catch (SQLException e) {
-			LOGGER.debug(e.getStackTrace());
-			LOGGER.error(e.getMessage());
+			return null;
+		} else if (option.equalsIgnoreCase("all")) {
+			try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
+					Statement statement = connection.createStatement();
+					ResultSet resultSet = statement.executeQuery(
+							"SELECT orders.id, orders.customer_id, orders.item_id, items.name, items.price FROM orders\n"
+									+ "INNER JOIN items ON orders.item_id=items.id");) {
+				ArrayList<Order> orders = new ArrayList<>();
+				while (resultSet.next()) {
+					orders.add(orderFromResultSet(resultSet));
+				}
+				return orders;
+			} catch (SQLException e) {
+				LOGGER.debug(e.getStackTrace());
+				LOGGER.error(e.getMessage());
+			}
+		} else {
+			LOGGER.info("Invalid input, try again");
+			readAll();
 		}
 		return new ArrayList<>();
-	}
-
-	public Order readLatest() {
-		try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
-				Statement statement = connection.createStatement();
-				ResultSet resultSet = statement.executeQuery("SELECT * FROM orders ORDER BY id DESC LIMIT 1");) {
-			resultSet.next();
-			return orderFromResultSet(resultSet);
-		} catch (Exception e) {
-			LOGGER.debug(e.getStackTrace());
-			LOGGER.error(e.getMessage());
-		}
-		return null;
 	}
 
 	/**
@@ -98,38 +116,9 @@ public class OrderDaoMysql implements Dao<Order> {
 		return null;
 	}
 
-	public Order readCustomer(Long id) {
-		try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
-				Statement statement = connection.createStatement();
-				ResultSet resultSet = statement.executeQuery("SELECT FROM orders where id = " + id);) {
-			resultSet.next();
-			return orderFromResultSet(resultSet);
-		} catch (Exception e) {
-			LOGGER.debug(e.getStackTrace());
-			LOGGER.error(e.getMessage());
-		}
-		return null;
-	}
-
-	/**
-	 * Updates a customer in the database
-	 *
-	 * @param customer - takes in a customer object, the id field will be used to
-	 *                 update that customer in the database
-	 * @return
-	 */
 	@Override
 	public Order update(Order order) {
-//		try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
-//				Statement statement = connection.createStatement();) {
-//			statement.executeUpdate("update customers set first_name ='" + customer.getFirstName() + "', surname ='"
-//					+ customer.getSurname() + "' where id =" + customer.getId());
-//			return readCustomer(customer.getId());
-//		} catch (Exception e) {
-//			LOGGER.debug(e.getStackTrace());
-//			LOGGER.error(e.getMessage());
-//		}
-//		return readCustomer(customer.getId());
+
 		return null;
 	}
 
