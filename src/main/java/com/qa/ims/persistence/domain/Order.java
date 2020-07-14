@@ -6,6 +6,7 @@ public class Order {
 
 	private Long id;
 	private int customer_id;
+	private int item_id;
 
 	// Array List storing all items they want in that order
 	private ArrayList<Integer> basket = new ArrayList<Integer>();
@@ -39,8 +40,16 @@ public class Order {
 		this.customer_id = customer_id;
 	}
 
+	public void setItem_id(int item_id) {
+		this.item_id = item_id;
+	}
+
+	public int getItem_id() {
+		return item_id;
+	}
+
 	public String toString() {
-		return ("id:" + id + " Order ID: " + id + " Customer Id: " + customer_id);
+		return ("id:" + this.getId() + " Customer ID: " + this.getCustomer_id() + " Item: " + this.getItem_id());
 	}
 
 	public void addItem(int item_id) {

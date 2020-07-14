@@ -74,15 +74,17 @@ public class OrderController implements CrudController<Order> {
 	 */
 	@Override
 	public Order update() {
-//		LOGGER.info("Please enter the id of the customer you would like to update");
-//		Long id = Long.valueOf(getInput());
-//		LOGGER.info("Please enter a first name");
-//		String firstName = getInput();
-//		LOGGER.info("Please enter a surname");
-//		String surname = getInput();
-//		Customer customer = customerService.update(new Customer(id, firstName, surname));
-//		LOGGER.info("Customer Updated");
-		LOGGER.info("Can not update an order! ");
+		LOGGER.info("Do you want to add or delete an item from your order? ");
+		String action = getInput();
+		if (action.equalsIgnoreCase("add")) {
+			create();
+		} else if (action.equalsIgnoreCase("delete")) {
+
+		} else {
+			LOGGER.info("Input not valid");
+		}
+
+		LOGGER.info("Customer Updated");
 		return null;
 	}
 
@@ -91,7 +93,7 @@ public class OrderController implements CrudController<Order> {
 	 */
 	@Override
 	public void delete() {
-		LOGGER.info("Please enter the id of the order you would like to delete");
+		LOGGER.info("Please enter your customer ID ");
 		Long id = Long.valueOf(getInput());
 		orderService.delete(id);
 		LOGGER.info("Deleted ");

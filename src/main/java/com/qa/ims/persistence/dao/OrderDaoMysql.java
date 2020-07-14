@@ -39,6 +39,10 @@ public class OrderDaoMysql implements Dao<Order> {
 		return new Order(id, customer_id);
 	}
 
+	String getInput() {
+		return Utils.getInput();
+	}
+
 	/**
 	 * Reads all customers from the database
 	 *
@@ -136,12 +140,30 @@ public class OrderDaoMysql implements Dao<Order> {
 	 */
 	@Override
 	public void delete(long id) {
-		try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
-				Statement statement = connection.createStatement();) {
-			statement.executeUpdate("delete from orders where id = " + id);
-		} catch (Exception e) {
-			LOGGER.debug(e.getStackTrace());
-			LOGGER.error(e.getMessage());
+		LOGGER.info("Do you want to delete whole order [whole] or an item from this order [item]");
+		String action = getInput();
+		if (action.equalsIgnoreCase("whole")) {
+			try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
+					Statement statement = connection.createStatement();) {
+				statement.executeUpdate("delete from orders where customer_id = " + id);
+			} catch (Exception e) {
+				LOGGER.debug(e.getStackTrace());
+				LOGGER.error(e.getMessage());
+			}
+		} else if (action.equalsIgnoreCase("item")) {
+			LOGGER.info("Which item do you want to delete from your order");
+			int item_number = Integer.parseInt(getInput());
+			try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
+					Statement statement = connection.createStatement();) {
+				statement.executeUpdate(
+						"delete from orders where customer_id = " + id + " and item_id = " + item_number);
+			} catch (Exception e) {
+				LOGGER.debug(e.getStackTrace());
+				LOGGER.error(e.getMessage());
+			}
+		} else {
+			LOGGER.info("invalid input");
+			delete(id);
 		}
 	}
 
