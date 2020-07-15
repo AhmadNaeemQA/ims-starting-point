@@ -59,6 +59,7 @@ public class Order extends Item {
 		for (int i = 0; i < basket.size(); i++) {
 			System.out.println(basket.get(i));
 		}
+		return;
 	}
 
 	public int getSize() {

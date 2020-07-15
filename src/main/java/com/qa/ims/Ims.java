@@ -28,13 +28,17 @@ public class Ims {
 
 	public static final Logger LOGGER = Logger.getLogger(Ims.class);
 
+	public String getInput() {
+		return Utils.getInput();
+	}
+
 	public void imsSystem() {
 
 		// Inputs username and password to connect to SQL server
 		LOGGER.info("What is your username");
-		String username = Utils.getInput();
+		String username = getInput();
 		LOGGER.info("What is your password");
-		String password = Utils.getInput();
+		String password = getInput();
 
 		init("jdbc:mysql://" + Utils.MYSQL_URL + "/practice", username, password, "src/main/resources/sql-schema.sql");
 
