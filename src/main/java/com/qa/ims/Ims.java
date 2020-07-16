@@ -40,7 +40,7 @@ public class Ims {
 		LOGGER.info("What is your password");
 		String password = getInput();
 
-		init("jdbc:mysql://" + Utils.MYSQL_URL + "/practice", username, password, "src/main/resources/sql-schema.sql");
+		init("jdbc:mysql://" + Utils.MYSQL_URL + "/ims", username, password, "src/main/resources/sql-schema.sql");
 
 		LOGGER.info("Which entity would you like to use?");
 		Domain.printDomains();
