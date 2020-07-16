@@ -97,7 +97,7 @@ public class ItemDaoMysql implements Dao<Item> {
 	public Item readItem(Long id) {
 		try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
 				Statement statement = connection.createStatement();
-				ResultSet resultSet = statement.executeQuery("SELECT FROM items where id = " + id);) {
+				ResultSet resultSet = statement.executeQuery("select * from items where id = " + id);) {
 			resultSet.next();
 			return ItemFromResultSet(resultSet);
 		} catch (Exception e) {

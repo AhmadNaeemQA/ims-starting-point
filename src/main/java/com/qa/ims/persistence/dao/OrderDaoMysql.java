@@ -42,7 +42,7 @@ public class OrderDaoMysql implements Dao<Order> {
 		return new Order(order_id, customer_id, item_id, name, price);
 	}
 
-	String getInput() {
+	public String getInput() {
 		return Utils.getInput();
 	}
 
@@ -96,6 +96,20 @@ public class OrderDaoMysql implements Dao<Order> {
 		return new ArrayList<>();
 	}
 
+	public Order readLatest() {
+		try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);
+				Statement statement = connection.createStatement();
+				ResultSet resultSet = statement.executeQuery(
+						"SELECT orders.id, orders.customer_id, orders.item_id, items.name, items.price FROM orders INNER JOIN items ON orders.item_id=items.id ORDER BY id DESC LIMIT 1");) {
+			resultSet.next();
+			return orderFromResultSet(resultSet);
+		} catch (Exception e) {
+			LOGGER.debug(e.getStackTrace());
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+	}
+
 	/**
 	 * Creates a customer in the database
 	 *
@@ -111,9 +125,10 @@ public class OrderDaoMysql implements Dao<Order> {
 			} catch (Exception e) {
 				LOGGER.debug(e.getStackTrace());
 				LOGGER.error(e.getMessage());
+				return null;
 			}
 		}
-		return null;
+		return readLatest();
 	}
 
 	@Override

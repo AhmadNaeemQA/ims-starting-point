@@ -26,8 +26,6 @@ public class CustomerDaoMysqTest {
 
 	@Test
 	public void readAllTestPositive() {
-//		CustomerDaoMysql customer = new CustomerDaoMysql("jdbc:mysql://" + Utils.MYSQL_URL + "/" + Utils.DATABASE_NAME,
-//				"root", "root");
 		ArrayList<Customer> customers = new ArrayList<>();
 		customers = (ArrayList<Customer>) customer.readAll();
 		assertNotNull(customers);
@@ -55,16 +53,14 @@ public class CustomerDaoMysqTest {
 	public void createTestNegative() {
 		CustomerDaoMysql customer = new CustomerDaoMysql("jdbc:mysql://" + Utils.MYSQL_URL + "/" + Utils.DATABASE_NAME,
 				"root", "wrong password");
-		Customer savedperson = new Customer("Bobby", "Shmurder");
-		assertNull(customer.create(savedperson));
+		assertNull(customer.create(new Customer("Bobby", "Shmurder")));
 	}
 
 	@Test
 	public void readLatestTestNegative() {
 		CustomerDaoMysql customer = new CustomerDaoMysql("jdbc:mysql://" + Utils.MYSQL_URL + "/" + Utils.DATABASE_NAME,
 				"root", "wrong password");
-		Customer customers = customer.readLatest();
-		assertNull(customers);
+		assertNull(customer.readLatest());
 	}
 
 	@Test
