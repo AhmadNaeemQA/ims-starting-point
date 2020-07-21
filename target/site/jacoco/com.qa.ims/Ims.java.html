@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Ims.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ForenameSurname-SoftwareMarch16</a> &gt; <a href="index.source.html" class="el_package">com.qa.ims</a> &gt; <span class="el_source">Ims.java</span></div><h1>Ims.java</h1><pre class="source lang-java linenums">package com.qa.ims;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.apache.log4j.Logger;
+
+import com.qa.ims.controller.Action;
+import com.qa.ims.controller.CrudController;
+import com.qa.ims.controller.CustomerController;
+import com.qa.ims.controller.ItemController;
+import com.qa.ims.controller.OrderController;
+import com.qa.ims.persistence.dao.CustomerDaoMysql;
+import com.qa.ims.persistence.dao.ItemDaoMysql;
+import com.qa.ims.persistence.dao.OrderDaoMysql;
+import com.qa.ims.persistence.domain.Domain;
+import com.qa.ims.services.CustomerServices;
+import com.qa.ims.services.ItemServices;
+import com.qa.ims.services.OrderServices;
+import com.qa.ims.utils.Utils;
+
+<span class="fc" id="L27">public class Ims {</span>
+
+<span class="fc" id="L29">	public static final Logger LOGGER = Logger.getLogger(Ims.class);</span>
+
+	public String getInput() {
+<span class="nc" id="L32">		return Utils.getInput();</span>
+	}
+
+	public void imsSystem() {
+
+		// Inputs username and password to connect to SQL server
+<span class="nc" id="L38">		LOGGER.info(&quot;What is your username&quot;);</span>
+<span class="nc" id="L39">		String username = getInput();</span>
+<span class="nc" id="L40">		LOGGER.info(&quot;What is your password&quot;);</span>
+<span class="nc" id="L41">		String password = getInput();</span>
+
+<span class="nc" id="L43">		init(&quot;jdbc:mysql://&quot; + Utils.MYSQL_URL + &quot;/ims&quot;, username, password, &quot;src/main/resources/sql-schema.sql&quot;);</span>
+
+<span class="nc" id="L45">		LOGGER.info(&quot;Which entity would you like to use?&quot;);</span>
+<span class="nc" id="L46">		Domain.printDomains();</span>
+
+<span class="nc" id="L48">		Domain domain = Domain.getDomain();</span>
+<span class="nc" id="L49">		LOGGER.info(&quot;What would you like to do with &quot; + domain.name().toLowerCase() + &quot;:&quot;);</span>
+
+<span class="nc" id="L51">		Action.printActions();</span>
+<span class="nc" id="L52">		Action action = Action.getAction();</span>
+
+<span class="nc bnc" id="L54" title="All 5 branches missed.">		switch (domain) {</span>
+		case CUSTOMER:
+<span class="nc" id="L56">			CustomerController customerController = new CustomerController(</span>
+					new CustomerServices(new CustomerDaoMysql(username, password)));
+<span class="nc" id="L58">			doAction(customerController, action);</span>
+<span class="nc" id="L59">			break;</span>
+		case ITEM:
+<span class="nc" id="L61">			ItemController itemController = new ItemController(new ItemServices(new ItemDaoMysql(username, password)));</span>
+<span class="nc" id="L62">			doAction(itemController, action);</span>
+<span class="nc" id="L63">			break;</span>
+
+		case ORDER:
+<span class="nc" id="L66">			OrderController orderController = new OrderController(</span>
+					new OrderServices(new OrderDaoMysql(username, password)));
+<span class="nc" id="L68">			doAction(orderController, action);</span>
+		case STOP:
+<span class="nc" id="L70">			break;</span>
+		default:
+			break;
+		}
+
+<span class="nc" id="L75">	}</span>
+
+	public void doAction(CrudController&lt;?&gt; crudController, Action action) {
+<span class="nc bnc" id="L78" title="All 6 branches missed.">		switch (action) {</span>
+		case CREATE:
+<span class="nc" id="L80">			crudController.create();</span>
+<span class="nc" id="L81">			break;</span>
+		case READ:
+<span class="nc" id="L83">			crudController.readAll();</span>
+<span class="nc" id="L84">			break;</span>
+		case UPDATE:
+<span class="nc" id="L86">			crudController.update();</span>
+<span class="nc" id="L87">			break;</span>
+		case DELETE:
+<span class="nc" id="L89">			crudController.delete();</span>
+<span class="nc" id="L90">			break;</span>
+		case RETURN:
+<span class="nc" id="L92">			break;</span>
+		default:
+			break;
+		}
+<span class="nc" id="L96">	}</span>
+
+	public String readFile(String fileLocation) {
+<span class="nc" id="L99">		StringBuilder stringBuilder = new StringBuilder();</span>
+<span class="nc" id="L100">		try (BufferedReader br = new BufferedReader(new FileReader(fileLocation));) {</span>
+			String string;
+<span class="nc bnc" id="L102" title="All 2 branches missed.">			while ((string = br.readLine()) != null) {</span>
+<span class="nc" id="L103">				stringBuilder.append(string);</span>
+<span class="nc" id="L104">				stringBuilder.append(&quot;\r\n&quot;);</span>
+			}
+<span class="nc" id="L106">		} catch (IOException e) {</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">			for (StackTraceElement ele : e.getStackTrace()) {</span>
+<span class="nc" id="L108">				LOGGER.debug(ele);</span>
+			}
+<span class="nc" id="L110">			LOGGER.error(e.getMessage());</span>
+<span class="nc" id="L111">		}</span>
+<span class="nc" id="L112">		return stringBuilder.toString();</span>
+	}
+
+	/**
+	 * To initialise the database with the schema needed to run the application
+	 */
+	public void init(String jdbcConnectionUrl, String username, String password, String fileLocation) {
+<span class="nc" id="L119">		try (Connection connection = DriverManager.getConnection(jdbcConnectionUrl, username, password);</span>
+<span class="nc" id="L120">				BufferedReader br = new BufferedReader(new FileReader(fileLocation));) {</span>
+			String string;
+<span class="nc bnc" id="L122" title="All 2 branches missed.">			while ((string = br.readLine()) != null) {</span>
+<span class="nc" id="L123">				try (Statement statement = connection.createStatement();) {</span>
+<span class="nc" id="L124">					statement.executeUpdate(string);</span>
+<span class="nc" id="L125">				}</span>
+			}
+<span class="fc" id="L127">		} catch (SQLException | IOException e) {</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">			for (StackTraceElement ele : e.getStackTrace()) {</span>
+<span class="fc" id="L129">				LOGGER.debug(ele);</span>
+			}
+<span class="fc" id="L131">			LOGGER.error(e.getMessage());</span>
+<span class="nc" id="L132">		}</span>
+<span class="fc" id="L133">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
